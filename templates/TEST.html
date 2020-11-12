@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title> Chat App</title>
+
+    <!--<link rel="stylesheet" media="all" href="{{ url_for('static', filename='style.css')}}">
+    <link rel= "stylesheet" href="static/style.css">
+    -->
+    <link rel= "stylesheet" href="chatpage.css">
+
+</head>
+<body>
+ <section>
+     <img src="img/ficon.png"><br>
+    <!-- <img src="img/one_issuing.png" class="logo"> -->
+     <p>One Issuing Solutions</p>
+    <input type="checkbox" id="click">
+    <label for="click" class="chat-btn">
+        <form method="post" action="/">
+      <i class="fab fa"><img src="static/img/chat.svg" class="iclick"></i>
+      <i class="fas fa" name="close" value="0"><img src="static/img/close.svg" class="iclick" onclick="deleteAllInputs()"></i>
+        </form>
+    </label>
+     <div class="chat-popup">
+         <div class="head-text"><img src="img/ficon.png" class="clogo">One Issuing - Fiserv</div>
+         <div class="chat-area">
+             <div class="bot-in-msg">
+                 <img src="static/img/bot.svg" class="avatar">
+                 <span class="in-msg"> Welcome to One Issuing - Fiserv. <br>I'm Bot, your friendly writing chatbot! <br>
+                     How can I Help you today? <br>
+                     <font size = "2" color="#fd7500">To start the QUIZ, just type "start".</font>
+                 </span>
+
+
+             </div>
+         </div>
+
+         <div class="input-area" >
+             <input id="textInput" type="text" name="msg" placeholder="Message" />
+             <!--<input id="textInput" name="msg" type="text" onkeyup="inputKeyUp(event)">
+             <button class="submit"><i class="si">Send</i></button>-->
+         </div>
+     </div>
+ </section>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!--<script  src="{{ url_for('static', filename='main.js')}}" data-turbolinks-track="reload"></script>
+    <script src="static/main.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="scr.js"></script>
+    -->
+    <script>
+        const popup = document.querySelector('.chat-popup');
+const chatBtn = document.querySelector('.chat-btn');
+
+const submitBtn = document.querySelector('.submit');
+const chatArea = document.querySelector('.chat-area');
+const inputElm = document.querySelector('input');
+// chat button toggler
+
+chatBtn.addEventListener('click', ()=>{
+    popup.classList.toggle('show');
+})
+
+        function getBotResponse() {
+          var rawText = $("#textInput").val();
+          let temp = '<div class="out-msg" id="dyn"><span class="my-msg">' + rawText + '</span><img src="static/img/user.svg" class="avatar" /></div>';
+          console.log(rawText)
+          $("#textInput").val("");
+          chatArea.insertAdjacentHTML("beforeend", temp);
+
+          $.get("/get", { msg: rawText }).done(function(data) {
+          console.log(data)
+          if (data.includes('quiz'))
+          {
+          var qu = data.split('//');
+          var start = qu[0];
+          var question = qu[1];
+          var option1 = qu[2];
+          var option2 = qu[3];
+          var option3 = qu[4];
+          var option4 = qu[5];
+          let temp1 = '<div class="bot-msg" id="dyn"><img src="{{ url_for("static", filename="bot.svg")}}" class="avatar" /><span class="msg"><b>' + question + '</b><br>' + option1 + '<br>' + option2 + '<br>' + option3 + '<br>' + option4 + '</span></div>';
+          chatArea.insertAdjacentHTML("beforeend", temp1);
+          }
+          else
+          {
+          let temp1 = '<div class="bot-msg" id="dyn"><img src="{{ url_for("static", filename="bot.svg")}}" class="avatar" /><span class="msg">' + data + '</span></div>';
+          chatArea.insertAdjacentHTML("beforeend", temp1);
+          }
+
+          });
+        }
+        $("#textInput").keypress(function(e) {
+          if (e.which == 13) {
+            getBotResponse();
+          }
+        }
+        );
+function deleteAllInputs() {
+    $('.out-msg').remove();
+    $('.bot-msg').remove();
+}
+
+    </script>
+</body>
+</html>
